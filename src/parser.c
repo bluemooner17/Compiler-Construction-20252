@@ -426,7 +426,6 @@ Type* compileLValue(void) {
   case OBJ_PARAMETER:
     // TEMPORARY: halt the program
     genLA(0, var->paramAttrs->localOffset);
-    // genHL();
     varType = var->paramAttrs->type;
     break;
   case OBJ_FUNCTION:
@@ -527,7 +526,6 @@ void compileForSt(void) {
   var = checkDeclaredVariable(currentToken->string);
   varType = var->varAttrs->type;
 
-    // Gán giá trị đầu
   genLA(0, var->varAttrs->localOffset);
   genCV();
   eat(SB_ASSIGN);
@@ -538,10 +536,10 @@ void compileForSt(void) {
   eat(KW_TO);
 
   startAddr = getCurrentCodeAddress();
-    // Lấy giá trị hiện tại của biến
+
   genLA(0, var->varAttrs->localOffset);
   genLI();
-    // Tính biểu thức kết thúc
+
   expType = compileExpression();
   checkTypeEquality(varType, expType);
   genLE();
@@ -550,7 +548,6 @@ void compileForSt(void) {
   eat(KW_DO);
   compileStatement();
 
-    // Tăng biến lên 1
   genLA(0, var->varAttrs->localOffset);
   genCV();
   genLI();
@@ -828,17 +825,6 @@ Type* compileFactor(void) {
 
     switch (obj->kind) {
     case OBJ_CONSTANT:
-  //     switch (obj->constAttrs->value->type) {
-  //     case TP_INT:
-	// type = intType;
-	// break;
-  //     case TP_CHAR:
-	// type = charType;
-	// break;
-  //     default:
-	// break;
-  //     }
-  //     break;
       genLC(obj->constAttrs->value->intValue);
       type = (obj->constAttrs->value->type == TP_INT) ? intType : charType;
       break;
@@ -856,7 +842,6 @@ Type* compileFactor(void) {
       // TEMPORARY: halt
       genLV(0, obj->paramAttrs->localOffset);
       type = obj->paramAttrs->type;
-      // genHL();
       break;
     case OBJ_FUNCTION:
       if (isPredefinedFunction(obj)) {
@@ -871,7 +856,6 @@ Type* compileFactor(void) {
       break;
     default: 
       error(ERR_INVALID_FACTOR,currentToken->lineNo, currentToken->colNo);
-      // break;
     }
     break;
   case SB_LPAR:
